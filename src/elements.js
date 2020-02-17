@@ -29,18 +29,14 @@ class Spaceship {
       this.h = h;
       this.speed = speed;
       this.tempEngine = true;
-      this.rotEngine = 0;
-      this.gradient = this.ctx.createLinearGradient(425, 550, 435, 570);
-      this.gradient.addColorStop(0, 'yellow');
-      this.gradient.addColorStop(0.5, 'orange');
-      this.gradient.addColorStop(1, '#1A0533');
+      this.rotEngine = 10;
     }
 
     draw = () => {
       this.ctx.drawImage(this.src, this.x, this.y, this.w, this.h);
       if(this.tempEngine){
-        this.rotEngine +=2;        
-        this.ctx.strokeStyle = this.gradient;
+        this.rotEngine +=3;        
+        this.ctx.strokeStyle = 'orange';
         this.ctx.lineWidth = 4;
         this.ctx.beginPath();
         this.ctx.moveTo(this.x+22, this.y+24);
@@ -51,8 +47,8 @@ class Spaceship {
           this.tempEngine = false;
         }
       }else{
-        this.rotEngine -=3;
-        this.ctx.strokeStyle=this.gradient;
+        this.rotEngine -=5;
+        this.ctx.strokeStyle = 'yellow';
         this.ctx.lineWidth = 4;
         this.ctx.beginPath();
         this.ctx.moveTo(this.x+22, this.y+24);
