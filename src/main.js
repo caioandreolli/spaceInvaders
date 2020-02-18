@@ -3,12 +3,7 @@ const gameCanvas = new Canvas();
 const imageSpaceShip = new Image();
 imageSpaceShip.src = 'images/spaceship.png';
 
-const gameSpaceship = new Spaceship(imageSpaceShip, gameCanvas.ctx, 423, 520, 44, 36, 20);
-
-imageSpaceShip.onload = () =>{    
-    gameSpaceship.draw();    
-}
-
+const gameSpaceship = new Spaceship(imageSpaceShip, gameCanvas.ctx, 423, 520, 44, 36, 1);
 
 class RenderGame{
     constructor(canvas, spaceship){
@@ -18,7 +13,7 @@ class RenderGame{
 
     drawCallBack = () => {
         this.canvas.clear();
-        this.spaceship.draw();
+        this.spaceship.draw(this.spaceship.x, this.spaceship.y);
 
         window.requestAnimationFrame(this.drawCallBack);
     }
@@ -29,20 +24,24 @@ class RenderGame{
 }
 
 
-const renderGame = new RenderGame(gameCanvas, gameSpaceship);
+imageSpaceShip.onload = () =>{    
+    gameSpaceship.draw(); 
+    
+    const renderGame = new RenderGame(gameCanvas, gameSpaceship);
 
+    document.onkeydown = (e) => {
+        gameSpaceship.move(e.keyCode);
+        console.log
+    }
 
-window.onkeydown = (e) => {
-    gameSpaceship.move(e.keyCode);
-    gameSpaceship.speed ++;
-    console.log(gameSpaceship.speed);
+    document.onkeyup = (e) => {
+        gameSpaceship.speed = 0 ;
+    }
+
+    renderGame.start();
 }
 
-window.onkeyup = (e) => {
-    // gameSpaceship.speed = 20;
-}
 
-renderGame.start();
  
 
 

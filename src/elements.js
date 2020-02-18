@@ -32,8 +32,12 @@ class Spaceship {
       this.rotEngine = 10;
     }
 
-    draw = () => {
-      this.ctx.drawImage(this.src, this.x, this.y, this.w, this.h);
+    draw = (x, y) => {
+      // this.ctx.fillStyle='white';
+      // this.ctx.beginPath();
+      // this.ctx.fillRect(this.x,this.y,this.w,this.h);
+      this.ctx.closePath();
+      this.ctx.drawImage(this.src, x, y, this.w, this.h);
       if(this.tempEngine){
         this.rotEngine +=3;        
         this.ctx.strokeStyle = 'orange';
@@ -65,16 +69,12 @@ class Spaceship {
     }
 
     move = (key) => {
+      console.log(this.speed);
+      this.speed++;
+      if(this.speed >= 12) this.speed = 12;
       switch(key) {
-        case 40:
-          this.y --;
-          break;
-          case 41:
-          this.y ++;
-          break;
         case 37:
           this.x -= this.speed;
-          this
           break;
         case 39:
           this.x += this.speed;
