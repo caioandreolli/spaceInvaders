@@ -20,20 +20,20 @@ class Canvas{
 
 
 class Spaceship {
-    constructor(src, ctx, x, y, w, h, speed){
+    constructor(src, ctx, x, y, w, h){
       this.src = src;
       this.ctx = ctx;
       this.y = y;
       this.x = x;
       this.w = w;
       this.h = h;
-      this.speed = speed;
       this.tempEngine = true;
       this.rotEngine = 10;
     }
 
-    draw = (x, y) => {
-      this.ctx.drawImage(this.src, x, y, this.w, this.h);
+    draw = () => {
+      this.ctx.drawImage(this.src, this.x, this.y, this.w, this.h);
+      // Afterburner
       if(this.tempEngine){
         this.rotEngine +=3;        
         this.ctx.strokeStyle = 'orange';
@@ -58,21 +58,15 @@ class Spaceship {
         if(this.rotEngine <= 10){
           this.tempEngine = true;
         }
+      } 
+    }
+
+    newPos = (leftPressed, rightPressed) => {
+      if(rightPressed) {
+        this.x += 6;
       }
-    }
-
-    newPos = () => {
-      this.x += this.speed;
-    }
-
-    move = (key) => {
-      switch (key) {
-        case 65:
-          this.speed -= 1;
-          break;
-        case 68:
-          this.speed += 1;
-          break;
+      else if(leftPressed) {
+        this.x -= 6;
       }
     }
 
