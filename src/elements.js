@@ -33,10 +33,6 @@ class Spaceship {
     }
 
     draw = (x, y) => {
-      // this.ctx.fillStyle='white';
-      // this.ctx.beginPath();
-      // this.ctx.fillRect(this.x,this.y,this.w,this.h);
-      this.ctx.closePath();
       this.ctx.drawImage(this.src, x, y, this.w, this.h);
       if(this.tempEngine){
         this.rotEngine +=3;        
@@ -65,25 +61,21 @@ class Spaceship {
       }
     }
 
-    drawFire = () => {
+    newPos = () => {
+      this.x += this.speed;
     }
 
     move = (key) => {
-      console.log(this.speed);
-      this.speed++;
-      if(this.speed >= 12) this.speed = 12;
-      switch(key) {
-        case 37:
-          this.x -= this.speed;
+      switch (key) {
+        case 65:
+          this.speed -= 1;
           break;
-        case 39:
-          this.x += this.speed;
+        case 68:
+          this.speed += 1;
           break;
-        default: 
-          console.log('comando inválido');
       }
     }
-    
+
     shot(){
 
     }
