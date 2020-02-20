@@ -36,25 +36,15 @@ class Spaceship {
       // Afterburner
       if(this.tempEngine){
         this.rotEngine +=3;        
-        this.ctx.strokeStyle = 'orange';
-        this.ctx.lineWidth = 4;
-        this.ctx.beginPath();
-        this.ctx.moveTo(this.x+22, this.y+24);
-        this.ctx.lineTo(this.x+22, this.y+24+this.rotEngine);
-        this.ctx.closePath();
-        this.ctx.stroke();
+        this.ctx.fillStyle = 'orange';
+        this.ctx.fillRect(this.x+20, this.y+24, 4, this.rotEngine);
         if(this.rotEngine >= 24){
           this.tempEngine = false;
         }
       }else{
         this.rotEngine -=5;
-        this.ctx.strokeStyle = 'yellow';
-        this.ctx.lineWidth = 4;
-        this.ctx.beginPath();
-        this.ctx.moveTo(this.x+22, this.y+24);
-        this.ctx.lineTo(this.x+22, this.y+24+this.rotEngine);
-        this.ctx.closePath();
-        this.ctx.stroke();
+        this.ctx.fillStyle = 'yellow';
+        this.ctx.fillRect(this.x+20, this.y+24, 4, this.rotEngine);
         if(this.rotEngine <= 10){
           this.tempEngine = true;
         }
@@ -70,9 +60,25 @@ class Spaceship {
       }
     }
 
-    shot(){
+}
 
-    }
+
+class Gunshot {
+  constructor(ctx, color, speed, x, y, w, h){
+    this.ctx = ctx;
+    this.color = color;
+    this.speed = speed;
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+  }
+
+  draw = () => {
+    this.ctx.fillStyle = this.color;
+    this.ctx.fillRect(this.x, this.y, this.w, this.h);
+  }
+
 }
 
 
