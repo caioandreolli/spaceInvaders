@@ -2,14 +2,16 @@ class Canvas{
   constructor(){
       this.canvas = document.getElementById('canvas');
       this.ctx = this.canvas.getContext('2d');
+      this.srcBg;
+      this.backgroundSpeed = 10;
+      this.bgYPos = 0;
   }
 
-  drawBackground(){
-
-  }
-
-  moveBackground(){
-
+  drawBackground = () => {
+    this.ctx.drawImage(this.srcBg, 0, this.bgYPos, this.canvas.width, this.canvas.height);
+    this.ctx.drawImage(this.srcBg, 0, this.bgYPos - this.canvas.height, this.canvas.width, this.canvas.height);
+    this.bgYPos +=this.backgroundSpeed;
+    if(this.bgYPos >= this.canvas.height) this.bgYPos = 0;
   }
 
   clear = () => {
@@ -60,6 +62,13 @@ class Spaceship {
       }
     }
 
+}
+
+
+class Aliens {
+  constructor(){
+
+  }
 }
 
 
