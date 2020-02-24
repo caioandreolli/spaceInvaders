@@ -69,24 +69,51 @@ class Aliens {
   constructor(ctx, x, y, w, h){
     this.ctx = ctx;
     this.x = x;
+    this.xInit = x;
     this.y = y;
     this.w = w;
     this.h = h;
     this.src;
     this.turnAlien = false;
+    this.downX = false;
   }
 
-  draw = () => {
+  draw = (img, imgFlip) => {
+    this.src = (!this.turnAlien) ? img : imgFlip;
+    this.x = (!this.downX) ? this.x +=5 : this.x -=5;
     this.ctx.drawImage(this.src, this.x, this.y, this.w, this.h);
   }
-
-  // newPosY = () =>{
-
-  // }
-
 }
 
 
+class AliensFormation {
+  constructor(canvas, arr, gap, quant){
+    this.canvas = canvas;
+    this.arr = arr;
+    this.gap = gap;
+    this.quant = quant;
+    this.y = 120;
+    this.x = 0;
+    this.ctrlTurnAlien = 0;
+    this.ctrlX = 0;
+  }
+  
+  receiveAliens = (w, h, img, imgFlip) => {
+    this.ctrlTurnAlien++;
+    this.ctrlX ++;
+    // this.x = (this.canvas.canvas.width - ((w * this.quant) + ((this.gap - w) * this.quant)))/2 + (this.gap - w)/2;
+    for(let i=0; i<this.quant; i++){
+      this.arr.push(new Aliens(this.canvas.ctx, this.x+(this.gap*i), this.y, w, h));
+      if(this.ctrlTurnAlien % 24 === 0) this.arr[i].turnAlien = !this.arr[i].turnAlien;
+      if(this.arr[i].x > this.arr[i].xInit + 200) this.arr[i].downX = !this.arr[i].downX;
+      if(this.arr[i].x < this.arr[i].xInit) this.arr[i].downX = !this.arr[i].downX;
+      console.log(this.arr[0].xInit)
+      this.arr[i].draw(img, imgFlip);
+    }
+  }
+}
+
+ 
 class Gunshot {
   constructor(ctx, color, speed, x, y, w, h){
     this.ctx = ctx;
@@ -102,24 +129,6 @@ class Gunshot {
     this.ctx.fillStyle = this.color;
     this.ctx.fillRect(this.x, this.y, this.w, this.h);
   }
-
-  shootWay = (arr,v) => {
-    for (let i = 0; i<arr.length; i++){
-    arr[i].y -= v;
-        if(arr[i].y >= 241 && arr[i].y <= 400){
-            arr[i].y -= v*1.4;
-            arr[i].h = 24;
-            arr[i].w = 3;
-        }
-        if(arr[i].y <= 240) {
-            arr[i].y -= v*2;
-            arr[i].h = 36;
-            arr[i].w = 2;
-        }
-        arr[i].draw();
-        if(arr[0].y <= 0) arr.shift();
-    }
-}
 
 }
 

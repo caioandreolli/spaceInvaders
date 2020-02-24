@@ -31,6 +31,14 @@ imageAliensLevel1.src = 'images/alien1.png';
 imageAliensLevel1Flip.src = 'images/alien1_flip.png';
 
 
+// Aliens Formation
+
+const formationGreen = new AliensFormation(gameCanvas, aliensLevel1, 74, 10, 120);
+// const formationRed = new AliensFormation(gameCanvas, aliensLevel2, 74, 10, 200);
+
+
+
+
 
 class RenderGame{
     constructor(canvas, spaceship){
@@ -45,9 +53,8 @@ class RenderGame{
         shootWay(shipShoots, 10);
         
         this.spaceship.draw();
-        aliensFormation(aliensLevel1, 120);
-        // shootWay(aliensLevel1, -10);
-        // aliensFormation(aliensLevel2, 200);
+        formationGreen.receiveAliens(34, 48, imageAliensLevel1, imageAliensLevel1Flip);
+        // formationRed.receiveAliens(34, 48, imageAliensLevel1Flip, imageAliensLevel1);
 
         window.requestAnimationFrame(this.drawCallBack);
     }
@@ -60,28 +67,9 @@ class RenderGame{
 
 // Generate Aliens
 
-aliensFormation = (arr, y) => {
-    controlTurnAlien ++;
-    let aliensGap = 74;
-    let aliensW = 34;
-
-    let aliensXStart = (gameCanvas.canvas.width - ((aliensW*aliensQuant)+((aliensGap-aliensW)*aliensQuant)))/2 + (aliensGap-aliensW)/2;
-
-    for(i=0; i<aliensQuant; i++){
-        arr.push(new Aliens(gameCanvas.ctx, aliensXStart+(aliensGap*i), y, aliensW, 48));
-        if (controlTurnAlien % 24 === 0) arr[i].turnAlien = !arr[i].turnAlien;
-        if(!arr[i].turnAlien){
-            arr[i].src = imageAliensLevel1;
-        } else {
-            arr[i].src = imageAliensLevel1Flip;
-        }
-        arr[i].draw();
-    }
-}
-
-imageAliensLevel1.onload = () => {
-    aliensFormation(aliensLevel1, 120);
-    // aliensFormation(aliensLevel2, 200);
+imageAliensLevel1Flip.onload = () => {
+    formationGreen.receiveAliens(34, 48, imageAliensLevel1, imageAliensLevel1Flip);
+    // formationRed.receiveAliens(34, 48, imageAliensLevel1, imageAliensLevel1Flip);
 }
 
 
@@ -119,7 +107,6 @@ function keyDownHandler(e) {
         leftPressed = true;
     }
     else if(e.key === ' '){
-        shipShoots.push(new Gunshot(gameCanvas.ctx, '#535F84', 10, gameSpaceship.x +20, gameSpaceship.y +6, 4, 18));
         shipShoots.push(new Gunshot(gameCanvas.ctx, '#AAE7FF', 10, gameSpaceship.x +20, gameSpaceship.y -4, 4, 18));
     }
 }
