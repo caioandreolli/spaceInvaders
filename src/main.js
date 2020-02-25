@@ -1,10 +1,17 @@
 let rightPressed = false;
 let leftPressed = false;
-let shipShoots = [];
+let shipShots = [];
+
+// Control Aliens Movement
 let aliensLevel1 = [];
 let aliensLevel2 = [];
-const aliensQuant = 10;
-let controlTurnAlien = 0;
+let aliensLevel3 = [];
+let aliensLevel4 = [];
+let vX = 3;
+let vY = 0.5;
+
+let stopGame = false;
+
 
 
 // Canvas
@@ -33,9 +40,10 @@ imageAliensLevel1Flip.src = 'images/alien1_flip.png';
 
 // Aliens Formation
 
-const formationGreen = new AliensFormation(gameCanvas, aliensLevel1, 74, 10, 120);
-// const formationRed = new AliensFormation(gameCanvas, aliensLevel2, 74, 10, 200);
-
+const formation1 = new AliensFormation(gameCanvas, aliensLevel1, 84, 8, 0, false);
+const formation2 = new AliensFormation(gameCanvas, aliensLevel2, 84, 10, 90/vY, true);
+const formation3 = new AliensFormation(gameCanvas, aliensLevel3, 84, 8, 180/vY, false);
+const formation4 = new AliensFormation(gameCanvas, aliensLevel4, 84, 6, 270/vY, true);
 
 
 
@@ -50,47 +58,44 @@ class RenderGame{
         this.canvas.clear();
         this.canvas.drawBackground();
         this.spaceship.newPos(leftPressed, rightPressed);
-        shootWay(shipShoots, 10);
+        // shotWay(shipShots, 10);
+        
+        formation1.moveAliens(34, 48, vX, vY, imageAliensLevel1, imageAliensLevel1Flip, gameSpaceship);
+        formation2.moveAliens(34, 48, vX, vY, imageAliensLevel1Flip, imageAliensLevel1, gameSpaceship);
+        formation3.moveAliens(34, 48, vX, vY, imageAliensLevel1, imageAliensLevel1Flip, gameSpaceship);
+        formation4.moveAliens(34, 48, vX, vY, imageAliensLevel1Flip, imageAliensLevel1, gameSpaceship);
         
         this.spaceship.draw();
-        formationGreen.receiveAliens(34, 48, imageAliensLevel1, imageAliensLevel1Flip);
-        // formationRed.receiveAliens(34, 48, imageAliensLevel1Flip, imageAliensLevel1);
+        this.spaceship.shotDetect();
 
-        window.requestAnimationFrame(this.drawCallBack);
+        this.start();
+
     }
 
     start = () => {
-        this.drawCallBack();
+        if(!stopGame) window.requestAnimationFrame(this.drawCallBack);
     }
 }
-
 
 // Generate Aliens
 
 imageAliensLevel1Flip.onload = () => {
-    formationGreen.receiveAliens(34, 48, imageAliensLevel1, imageAliensLevel1Flip);
-    // formationRed.receiveAliens(34, 48, imageAliensLevel1, imageAliensLevel1Flip);
+    formation1.moveAliens(34, 48, vX, vY, imageAliensLevel1, imageAliensLevel1Flip, gameSpaceship);
+    formation2.moveAliens(34, 48, vX, vY, imageAliensLevel1Flip, imageAliensLevel1, gameSpaceship);
+    formation3.moveAliens(34, 48, vX, vY, imageAliensLevel1, imageAliensLevel1Flip, gameSpaceship);
+    formation4.moveAliens(34, 48, vX, vY, imageAliensLevel1Flip, imageAliensLevel1, gameSpaceship);
 }
 
+imageBackground.onload = () =>{
+    gameCanvas.drawBackground();
+}
 
-// Spaceship shoot function
+imageSpaceShip.onload = () =>{    
+    gameSpaceship.draw(); 
+    
+    const renderGame = new RenderGame(gameCanvas, gameSpaceship);
 
-shootWay = (arr,v) => {
-    for (let i = 0; i<arr.length; i++){
-    arr[i].y -= v;
-        if(arr[i].y >= 241 && arr[i].y <= 400){
-            arr[i].y -= v*1.4;
-            arr[i].h = 24;
-            arr[i].w = 3;
-        }
-        if(arr[i].y <= 240) {
-            arr[i].y -= v*2;
-            arr[i].h = 36;
-            arr[i].w = 2;
-        }
-        arr[i].draw();
-        if(arr[0].y <= 0) arr.shift();
-    }
+    renderGame.start();
 }
 
 
@@ -107,7 +112,7 @@ function keyDownHandler(e) {
         leftPressed = true;
     }
     else if(e.key === ' '){
-        shipShoots.push(new Gunshot(gameCanvas.ctx, '#AAE7FF', 10, gameSpaceship.x +20, gameSpaceship.y -4, 4, 18));
+        gameSpaceship.shot();
     }
 }
 
@@ -118,18 +123,6 @@ function keyUpHandler(e) {
     else if(e.key === 'a') {
         leftPressed = false;
     }
-}
-
-imageBackground.onload = () =>{
-    gameCanvas.drawBackground();
-}
-
-imageSpaceShip.onload = () =>{    
-    gameSpaceship.draw(); 
-    
-    const renderGame = new RenderGame(gameCanvas, gameSpaceship);
-
-    renderGame.start();
 }
 
 
