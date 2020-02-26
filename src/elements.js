@@ -25,7 +25,7 @@ class Canvas{
 
 
 class Spaceship {
-    constructor(ctx, x, y, w, h){
+    constructor(ctx, x, y, w, h, element){
       this.src;
       this.ctx = ctx;
       this.y = y;
@@ -36,6 +36,7 @@ class Spaceship {
       this.rotEngine = 10;
       this.shotArr = [];
       this.shotV = 10;
+      this.element = element;
     }
 
     draw = () => {
@@ -166,28 +167,45 @@ class AliensFormation {
     this.x = 0;
     this.ctrlTurnAlien = 0;
     this.ctrlY = 0;
+    this.hAlien;
+    this.img;
+    this.imgFlip;
+    this.distance;
+  }
+
+  receiveAliens = (w, h, img, imgFlip, element) => {
+    this.hAlien = h;
+    this.img = img;
+    this.imgFlip = imgFlip;
+    this.distance = this.canvas.canvas.width - ((w * this.quant) + ((this.gap - w) * this.quant) - (this.gap - w));
+    let xStart;
+    for(let i=0; i<this.quant; i++){
+      xStart = (this.delayX) ? this.distance + this.gap*i : this.x + (this.gap * i);
+      this.arr.push(new Aliens(this.canvas.ctx, xStart, -h, w, h, element));
+      this.arr[i].draw(img, imgFlip, 0);
+    }
   }
   
-  moveAliens = (w, h, vX, vY, img, imgFlip, element) => {
+  moveAliens = (vX, vY) => {
     this.ctrlTurnAlien++;
     this.ctrlY++;
-    let distance = this.canvas.canvas.width - ((w * this.quant) + ((this.gap - w) * this.quant) - (this.gap - w));
-    let xStart;
+    // let xStart;
 
     for(let i=0; i<this.quant; i++){
-      xStart = (this.delayX) ? distance + this.gap*i : this.x + (this.gap * i);
-      this.arr.push(new Aliens(this.canvas.ctx, xStart, -h, w, h, element));
+      // xStart = (this.delayX) ? distance + this.gap*i : this.x + (this.gap * i);
+      // this.arr.push(new Aliens(this.canvas.ctx, xStart, -h, w, h, element));
+
 
       if(this.ctrlY >= this.delayY) {
         this.arr[i].y +=vY;
-        if(this.arr[i].y > 600) this.arr[i].y = -h;
+        if(this.arr[i].y > 600) this.arr[i].y = -this.hAlien;
       }
 
       if(this.delayX) this.arr[i].xInit = this.x + (this.gap * i);
       if(this.ctrlTurnAlien % 24 === 0) this.arr[i].turnAlien = !this.arr[i].turnAlien;
-      if(this.arr[i].x > this.arr[i].xInit + distance) this.arr[i].moveX = !this.arr[i].moveX;
+      if(this.arr[i].x > this.arr[i].xInit + this.distance) this.arr[i].moveX = !this.arr[i].moveX;
       if(this.arr[i].x < this.arr[i].xInit) this.arr[i].moveX = !this.arr[i].moveX;
-      this.arr[i].draw(img, imgFlip, vX);
+      this.arr[i].draw(this.img, this.imgFlip, vX);
       this.arr[i].shot();
       this.arr[i].shotDetect();
     }

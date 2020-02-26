@@ -60,10 +60,10 @@ class RenderGame{
         this.spaceship.newPos(leftPressed, rightPressed);
         // shotWay(shipShots, 10);
         
-        formation1.moveAliens(34, 48, vX, vY, imageAliensLevel1, imageAliensLevel1Flip, gameSpaceship);
-        formation2.moveAliens(34, 48, vX, vY, imageAliensLevel1Flip, imageAliensLevel1, gameSpaceship);
-        formation3.moveAliens(34, 48, vX, vY, imageAliensLevel1, imageAliensLevel1Flip, gameSpaceship);
-        formation4.moveAliens(34, 48, vX, vY, imageAliensLevel1Flip, imageAliensLevel1, gameSpaceship);
+        formation1.moveAliens(vX, vY);
+        formation2.moveAliens(vX, vY);
+        formation3.moveAliens(vX, vY);
+        formation4.moveAliens(vX, vY);
         
         this.spaceship.draw();
         this.spaceship.shotDetect();
@@ -80,10 +80,15 @@ class RenderGame{
 // Generate Aliens
 
 imageAliensLevel1Flip.onload = () => {
-    formation1.moveAliens(34, 48, vX, vY, imageAliensLevel1, imageAliensLevel1Flip, gameSpaceship);
-    formation2.moveAliens(34, 48, vX, vY, imageAliensLevel1Flip, imageAliensLevel1, gameSpaceship);
-    formation3.moveAliens(34, 48, vX, vY, imageAliensLevel1, imageAliensLevel1Flip, gameSpaceship);
-    formation4.moveAliens(34, 48, vX, vY, imageAliensLevel1Flip, imageAliensLevel1, gameSpaceship);
+    formation1.receiveAliens(34, 48, imageAliensLevel1, imageAliensLevel1Flip, gameSpaceship);
+    formation2.receiveAliens(34, 48, imageAliensLevel1Flip, imageAliensLevel1, gameSpaceship);
+    formation3.receiveAliens(34, 48, imageAliensLevel1, imageAliensLevel1Flip, gameSpaceship);
+    formation4.receiveAliens(34, 48, imageAliensLevel1Flip, imageAliensLevel1, gameSpaceship);
+
+    // formation1.moveAliens(34, 48, vX, vY, imageAliensLevel1, imageAliensLevel1Flip, gameSpaceship);
+    // formation2.moveAliens(34, 48, vX, vY, imageAliensLevel1Flip, imageAliensLevel1, gameSpaceship);
+    // formation3.moveAliens(34, 48, vX, vY, imageAliensLevel1, imageAliensLevel1Flip, gameSpaceship);
+    // formation4.moveAliens(34, 48, vX, vY, imageAliensLevel1Flip, imageAliensLevel1, gameSpaceship);
 }
 
 imageBackground.onload = () =>{
@@ -113,6 +118,7 @@ function keyDownHandler(e) {
     }
     else if(e.key === ' '){
         gameSpaceship.shot();
+       console.log(aliensLevel1);
     }
 }
 
