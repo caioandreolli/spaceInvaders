@@ -25,7 +25,7 @@ class Canvas{
 
 
 class Spaceship {
-    constructor(ctx, x, y, w, h, element){
+    constructor(ctx, x, y, w, h){
       this.src;
       this.ctx = ctx;
       this.y = y;
@@ -36,27 +36,39 @@ class Spaceship {
       this.rotEngine = 10;
       this.shotArr = [];
       this.shotV = 10;
-      this.element = element;
+      this.element = [];
+      this.hasExplosion = false;
+      this.isDead = false;
+      this.countExplosion = 0;
     }
-
+    
     draw = () => {
-      this.ctx.drawImage(this.src, this.x, this.y, this.w, this.h);
-      // Afterburner
-      if(this.tempEngine){
-        this.rotEngine +=3;        
-        this.ctx.fillStyle = 'orange';
-        this.ctx.fillRect(this.x+20, this.y+24, 4, this.rotEngine);
-        if(this.rotEngine >= 24){
-          this.tempEngine = false;
+      if(!this.hasExplosion){
+        this.ctx.drawImage(this.src, this.x, this.y, this.w, this.h);
+        // Afterburner
+        if(this.tempEngine){
+          this.rotEngine +=3;        
+          this.ctx.fillStyle = 'orange';
+          this.ctx.fillRect(this.x+20, this.y+24, 4, this.rotEngine);
+          if(this.rotEngine >= 24){
+            this.tempEngine = false;
+          }
+        }else{
+          this.rotEngine -=5;
+          this.ctx.fillStyle = 'yellow';
+          this.ctx.fillRect(this.x+20, this.y+24, 4, this.rotEngine);
+          if(this.rotEngine <= 10){
+            this.tempEngine = true;
+          }
         }
-      }else{
-        this.rotEngine -=5;
-        this.ctx.fillStyle = 'yellow';
-        this.ctx.fillRect(this.x+20, this.y+24, 4, this.rotEngine);
-        if(this.rotEngine <= 10){
-          this.tempEngine = true;
-        }
-      } 
+      } else {
+        this.explosion();
+      }
+      if(this.isDead){
+        //Send to Cemitery
+        this.x = -100;
+        this.y = -100;
+      };
     }
 
     newPos = (leftPressed, rightPressed) => {
@@ -73,21 +85,57 @@ class Spaceship {
     }
 
     shotDetect = () => {
-      this.shotArr.forEach(e => {
-        e.y -= this.shotV;
-        e.distance++;
-        if(e.distance > 20){
-          e.y -= this.shotV*1.2;
-          e.h = 24;
+      this.shotArr.forEach((shot, i) => {
+        shot.y -= this.shotV;
+        shot.distance++;
+        if(shot.distance > 20){
+          shot.y -= this.shotV*1.2;
+          shot.h = 24;
         }
-        if(e.distance > 30) {
-          e.y -= this.shotV*2;
-          e.h = 36;
+        if(shot.distance > 30) {
+          shot.y -= this.shotV*2;
+          shot.h = 36;
         }
-        e.draw();
-        // if(e.hitShot(this.element)) return stopGame = true;
-        if(e.y > 600) this.shotArr.shift();
+        shot.draw();
+        this.element.forEach(formation => {
+          formation.forEach(alien => {
+            if(shot.hitShot(alien)){
+              this.shotArr.splice(i,1);
+              alien.hasExplosion = true;
+            }
+          });
+        });
+        if(shot.y < 0) this.shotArr.shift();
       })
+    }
+
+    explosion = () => {
+      this.countExplosion++;
+        let imgExplosion = new Image();
+        if(this.countExplosion >= 0 && this.countExplosion <= 7){
+          imgExplosion.src = 'images/explosion_0.png';
+          this.ctx.drawImage(imgExplosion, this.x-8, this.y-8, 60, 60);
+        }
+        if(this.countExplosion >=8 && this.countExplosion <= 15){
+          imgExplosion.src = 'images/explosion_1_0.png';
+          this.ctx.drawImage(imgExplosion, this.x-8, this.y-8, 60, 60);
+        }
+        if(this.countExplosion >=16 && this.countExplosion <= 22){
+          imgExplosion.src = 'images/explosion_1.png';
+          this.ctx.drawImage(imgExplosion, this.x-8, this.y-8, 60, 60);
+        }
+        if(this.countExplosion >=23 && this.countExplosion <= 30){
+          imgExplosion.src = 'images/explosion_2_0.png';
+          this.ctx.drawImage(imgExplosion, this.x-8, this.y-8, 60, 60);
+        }
+        if(this.countExplosion >=31 && this.countExplosion <= 38){
+          imgExplosion.src = 'images/explosion_2.png';
+          this.ctx.drawImage(imgExplosion, this.x-8, this.y-8, 60, 60);
+        }
+        if(this.countExplosion > 38) {
+          this.isDead = true;
+          this.hasExplosion = false;
+        }
     }
 
     left() {
@@ -98,6 +146,9 @@ class Spaceship {
     }
     top() {
       return this.y;
+    }
+    bottom() {
+      return this.y + this.h;
     }
 
 }
@@ -116,13 +167,20 @@ class Aliens {
     this.moveX = false;
     this.shotArr = [];
     this.element = element;
-    this.shotV = 10;
+    this.shotV = 8;
+    this.hasExplosion = false;
+    this.isDead = false;
+    this.countExplosion = 0;
   }
 
   draw = (img, imgFlip, v) => {
-    this.src = (!this.turnAlien) ? img : imgFlip;
     this.x = (!this.moveX) ? this.x +=v : this.x -=v;
-    this.ctx.drawImage(this.src, this.x, this.y, this.w, this.h);
+    if(!this.hasExplosion){
+      this.src = (!this.turnAlien) ? img : imgFlip;
+      this.ctx.drawImage(this.src, this.x, this.y, this.w, this.h);
+    } else {
+      this.explosion();
+    }
   }
 
   shot = () =>{
@@ -137,7 +195,7 @@ class Aliens {
   }
 
   shotDetect = () => {
-    this.shotArr.forEach(e => {
+    this.shotArr.forEach((e, i) => {
       e.distance++;
       e.y += this.shotV;
       if(e.distance > 20){
@@ -149,32 +207,79 @@ class Aliens {
         e.h = 30;
       }
       e.draw();
-      if(e.hitShot(this.element)) return stopGame = true;
+      if(e.hitShot(this.element)) {
+        this.element.hasExplosion = true;
+        this.shotArr.splice(i,1);
+      }
       if(e.y > 600) this.shotArr.shift();
     });
+  }
+
+  colision = () => {
+    return !(
+      this.bottom() < this.element.top() ||
+      this.top() > this.element.bottom() ||
+      this.right() < this.element.left() ||
+      this.left() > this.element.right()
+    );
+  }
+
+  explosion = () => {
+    this.countExplosion++;
+      let imgExplosion = new Image();
+      if(this.countExplosion >= 0 && this.countExplosion <= 5){
+        imgExplosion.src = 'images/explosion_0.png';
+        this.ctx.drawImage(imgExplosion, this.x-8, this.y-2, 48, 48);
+      }
+      if(this.countExplosion >=6 && this.countExplosion <= 11){
+        imgExplosion.src = 'images/explosion_1.png';
+        this.ctx.drawImage(imgExplosion, this.x-8, this.y-2, 48, 48);
+      }
+      if(this.countExplosion >=12 && this.countExplosion <= 18){
+        imgExplosion.src = 'images/explosion_2.png';
+        this.ctx.drawImage(imgExplosion, this.x-8, this.y-2, 48, 48);
+      }
+      if(this.countExplosion > 18) {
+        this.isDead = true;
+        this.hasExplosion = false;
+      }
+  }
+
+  left() {
+    return this.x;
+  }
+  right() {
+    return this.x + this.w;
+  }
+  top() {
+    return this.y;
+  }
+  bottom() {
+    return this.y + this.h;
   }
 }
 
 
 class AliensFormation {
-  constructor(canvas, arr, gap, quant, delayY, delayX){
+  constructor(canvas, gap, quant, delayY, delayX){
     this.canvas = canvas;
-    this.arr = arr;
     this.gap = gap;
     this.quant = quant;
     this.delayY = delayY;
     this.delayX = delayX;
+    this.arr = [];
     this.x = 0;
     this.ctrlTurnAlien = 0;
     this.ctrlY = 0;
-    this.hAlien;
+    this.turnBack = 0;
     this.img;
     this.imgFlip;
     this.distance;
+    this.countExplosion = 0;
+    this.startExplosion = false;
   }
 
   receiveAliens = (w, h, img, imgFlip, element) => {
-    this.hAlien = h;
     this.img = img;
     this.imgFlip = imgFlip;
     this.distance = this.canvas.canvas.width - ((w * this.quant) + ((this.gap - w) * this.quant) - (this.gap - w));
@@ -182,6 +287,7 @@ class AliensFormation {
     for(let i=0; i<this.quant; i++){
       xStart = (this.delayX) ? this.distance + this.gap*i : this.x + (this.gap * i);
       this.arr.push(new Aliens(this.canvas.ctx, xStart, -h, w, h, element));
+      this.arr[i].turnBack = h;
       this.arr[i].draw(img, imgFlip, 0);
     }
   }
@@ -189,26 +295,30 @@ class AliensFormation {
   moveAliens = (vX, vY) => {
     this.ctrlTurnAlien++;
     this.ctrlY++;
-    // let xStart;
-
-    for(let i=0; i<this.quant; i++){
-      // xStart = (this.delayX) ? distance + this.gap*i : this.x + (this.gap * i);
-      // this.arr.push(new Aliens(this.canvas.ctx, xStart, -h, w, h, element));
-
-
-      if(this.ctrlY >= this.delayY) {
-        this.arr[i].y +=vY;
-        if(this.arr[i].y > 600) this.arr[i].y = -this.hAlien;
+    this.arr.forEach((e, i) => {
+      if(!e.isDead){
+        if(this.ctrlY >= this.delayY) {
+          e.y +=vY;
+          if(e.y > 600) e.y = -(e.turnBack);
+        }
+        if(this.delayX) e.xInit = this.x + (this.gap * i);
+        if(this.ctrlTurnAlien % 24 === 0) e.turnAlien = !e.turnAlien;
+        if(e.x > e.xInit + this.distance) e.moveX = !e.moveX;
+        if(e.x < e.xInit) e.moveX = !e.moveX;
+        e.draw(this.img, this.imgFlip, vX);
+        e.colision();
+        if(e.colision()) {
+          e.element.hasExplosion = true;
+          e.hasExplosion = true;
+        }
+        e.shot();
+      } else {
+        // Send to Cemitery
+        e.y = -100;
+        e.x = -100;
       }
-
-      if(this.delayX) this.arr[i].xInit = this.x + (this.gap * i);
-      if(this.ctrlTurnAlien % 24 === 0) this.arr[i].turnAlien = !this.arr[i].turnAlien;
-      if(this.arr[i].x > this.arr[i].xInit + this.distance) this.arr[i].moveX = !this.arr[i].moveX;
-      if(this.arr[i].x < this.arr[i].xInit) this.arr[i].moveX = !this.arr[i].moveX;
-      this.arr[i].draw(this.img, this.imgFlip, vX);
-      this.arr[i].shot();
-      this.arr[i].shotDetect();
-    }
+      e.shotDetect();
+    });
   }
 }
 
@@ -236,6 +346,9 @@ class Gunshot {
   right() {
     return this.x + this.w;
   }
+  top() {
+    return this.y;
+ }
   bottom() {
     return this.y + this.h;
   }
@@ -243,10 +356,9 @@ class Gunshot {
   hitShot(element) {
     return !(
       this.bottom() < element.top() ||
-      this.right() < element.left() || 
+      this.top() > element.bottom() ||
+      this.right() < element.left() ||
       this.left() > element.right()
     );
   }
 }
-
-
