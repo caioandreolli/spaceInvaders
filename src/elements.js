@@ -6,7 +6,7 @@ class Canvas{
       this.canvas = document.getElementById('canvas');
       this.ctx = this.canvas.getContext('2d');
       this.src;
-      this.backgroundSpeed = 20;
+      this.backgroundSpeed = 0.3;
       this.bgYPos = 0;
   }
 

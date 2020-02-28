@@ -58,11 +58,13 @@ class RenderGame{
         this.canvas.clear();
         this.canvas.drawBackground();
         
-        formation1.moveAliens(vX, vY);
-        formation2.moveAliens(vX, vY);
-        formation3.moveAliens(vX, vY);
-        formation4.moveAliens(vX, vY);
+        // formation1.moveAliens(vX, vY);
+        // formation2.moveAliens(vX, vY);
+        // formation3.moveAliens(vX, vY);
+        // formation4.moveAliens(vX, vY);
         
+        beginGame();
+
         if(!this.spaceship.isDead) {
             this.spaceship.newPos(leftPressed, rightPressed);
             this.spaceship.draw();
@@ -103,8 +105,10 @@ imageSpaceShip.onload = () =>{
 
 // Spaceship Keyboard Control
 
+gameCanvas.canvas.addEventListener('click', clickMouse, false);
 window.addEventListener('keydown', keyDownHandler, false);
 window.addEventListener('keyup', keyUpHandler, false);
+
 
 function keyDownHandler(e) {
     if(e.key === 'd') {
@@ -128,7 +132,30 @@ function keyUpHandler(e) {
 }
 
 
- 
+// Logo
+let imgBegin = new Image();
+let imgBtEasy = new Image();
+imgBegin.src = 'images/logo.png';
+imgBtEasy.src = 'images/buttonEasy.png'
 
 
- 
+
+function beginGame(){
+    gameCanvas.ctx.drawImage(imgBegin, 450-212, 120, 424, 214);
+    gameCanvas.ctx.drawImage(imgBtEasy, 164, 391, 136, 40);
+}
+
+
+
+
+function clickMouse(e){
+    let x = e.offsetX;
+    let y = e.offsetY;
+    if (x >= 164 && x <= (164 + 136) &&
+        y >= 391 && y <= (391 + 40)) {
+        alert("Thanks for clicking!");
+    }
+}
+
+
+
