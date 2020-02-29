@@ -132,9 +132,10 @@ class Spaceship {
           imgExplosion.src = 'images/explosion_2.png';
           this.ctx.drawImage(imgExplosion, this.x-8, this.y-8, 60, 60);
         }
-        if(this.countExplosion > 38) {
-          this.isDead = true;
+        if(this.countExplosion >= 39) {
+          hasGameOver = true;
           this.hasExplosion = false;
+          this.isDead = true;
         }
     }
 

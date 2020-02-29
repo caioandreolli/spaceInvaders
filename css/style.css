@@ -1,9 +1,13 @@
 *{
     padding: 0;
     margin: 0;
-    background-color: #0F0C2B;
+    /* background-color: #0F0C2B; */
     /* background-color: #1A0533; */
     /* background-color: black; */
+}
+
+body{
+    background-color: #0F0C2B;
 }
 
 div{
