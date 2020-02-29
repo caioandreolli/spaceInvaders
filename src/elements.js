@@ -88,11 +88,11 @@ class Spaceship {
       this.shotArr.forEach((shot, i) => {
         shot.y -= this.shotV;
         shot.distance++;
-        if(shot.distance > 20){
+        if(shot.distance >= 20){
           shot.y -= this.shotV*1.2;
           shot.h = 24;
         }
-        if(shot.distance > 30) {
+        if(shot.distance >= 30) {
           shot.y -= this.shotV*2;
           shot.h = 36;
         }
@@ -105,7 +105,7 @@ class Spaceship {
             }
           });
         });
-        if(shot.y < 0) this.shotArr.shift();
+        if(shot.y <= 0) this.shotArr.shift();
       })
     }
 
@@ -135,6 +135,7 @@ class Spaceship {
         if(this.countExplosion >= 39) {
           hasGameOver = true;
           this.hasExplosion = false;
+          this.countExplosion = 0;
           this.isDead = true;
         }
     }
@@ -199,11 +200,11 @@ class Aliens {
     this.shotArr.forEach((e, i) => {
       e.distance++;
       e.y += this.shotV;
-      if(e.distance > 20){
+      if(e.distance >= 20){
         e.y += this.shotV*0.2;
         e.h = 22;
       }
-      if(e.distance > 30) {
+      if(e.distance >= 30) {
         e.y += this.shotV*0.2;
         e.h = 30;
       }
@@ -212,7 +213,7 @@ class Aliens {
         this.element.hasExplosion = true;
         this.shotArr.splice(i,1);
       }
-      if(e.y > 600) this.shotArr.shift();
+      if(e.y >= 600) this.shotArr.shift();
     });
   }
 
@@ -276,8 +277,6 @@ class AliensFormation {
     this.img;
     this.imgFlip;
     this.distance;
-    this.countExplosion = 0;
-    this.startExplosion = false;
   }
 
   receiveAliens = (w, h, img, imgFlip, element) => {
