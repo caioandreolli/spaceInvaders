@@ -40,6 +40,7 @@ class Spaceship {
       this.hasExplosion = false;
       this.isDead = false;
       this.countExplosion = 0;
+      this.isAllAliensDead = 0;
     }
     
     draw = () => {
@@ -73,11 +74,9 @@ class Spaceship {
 
     newPos = (leftPressed, rightPressed) => {
       if(rightPressed) {
-        this.x += 6;
+        if(this.x<=846) this.x += 6;
       }
-      else if(leftPressed) {
-        this.x -= 6;
-      }
+      else if(leftPressed) if(this.x >= 10) this.x -= 6;
     }
 
     shot = () => {
@@ -102,6 +101,8 @@ class Spaceship {
             if(shot.hitShot(alien)){
               this.shotArr.splice(i,1);
               alien.hasExplosion = true;
+              this.isAllAliensDead++;
+              if(this.isAllAliensDead === quantAliens) hasYouWin = true;
             }
           });
         });
@@ -277,6 +278,7 @@ class AliensFormation {
     this.img;
     this.imgFlip;
     this.distance;
+    this.isAllAliensDead = 0;
   }
 
   receiveAliens = (w, h, img, imgFlip, element) => {

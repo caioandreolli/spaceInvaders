@@ -14,9 +14,12 @@ let isEasy = false;
 let isMedium = false;
 let isHard = false;
 let hasGameOver = false;
+let hasYouWin = false;
 let toggleBegin = true;
 const imgGameOver = new Image();
 imgGameOver.src = 'images/game_over.png';
+const imgYouWin = new Image();
+imgYouWin.src = 'images/you_win.png';
 
 
 // Variables for Keyboard Control
@@ -65,6 +68,7 @@ const formation1 = new AliensFormation(gameCanvas, 84, 7, 0, false);
 const formation2 = new AliensFormation(gameCanvas, 84, 8, 90/vY, true);
 const formation3 = new AliensFormation(gameCanvas, 84, 9, 180/vY, false);
 const formation4 = new AliensFormation(gameCanvas, 84, 10, 270/vY, true);
+const quantAliens = 34;
 
 
 // RenderGame
@@ -94,6 +98,9 @@ class RenderGame{
         }
         if(hasGameOver){
             gameOver();
+        }
+        if(hasYouWin){
+            youWin();
         }
 
         this.start();
@@ -133,6 +140,8 @@ imageSpaceShip.onload = () =>{
 
 function beginGame(){
     gameSpaceship.isDead = false;
+    gameSpaceship.isAllAliensDead = 0;
+    hasYouWin = false;
     hasGameOver = false;
     isEasy = false;
     gameCanvas.ctx.drawImage(imgBegin, 238, 108, 424, 214);
@@ -165,7 +174,7 @@ function clickMouse(e) {
             y >= 401 && y <= 441) {
             alert("HARD!");
         }
-    } else if(hasGameOver){
+    } else if(hasGameOver || hasYouWin){
         if (x >= 388 && x <= 528 &&
             y >= 401 && y <= 441) {
             gameSpaceship.element = [];
@@ -233,6 +242,15 @@ function gameOver() {
     gameCanvas.ctx.drawImage(imgGameOver, 274, 153, 352, 288);
     document.body.style.background = '#060510';
 }
+
+function youWin() {
+    toggleBegin = true;
+    gameCanvas.ctx.fillStyle = 'rgba(0,0,0,.6)';
+    gameCanvas.ctx.fillRect(0, 0, 900, 600);
+    gameCanvas.ctx.drawImage(imgYouWin, 318, 168, 263, 273);
+    document.body.style.background = '#060510';
+}
+
 
 
 // Spaceship Keyboard Control
